@@ -24,12 +24,12 @@ public class PersonResource {
 	ApplicationEventPublisher publisher;
 
 	@GetMapping
-	ResponseEntity<List<Person>> ListPeople() {
+	ResponseEntity<List<Person>> listPeople() {
 		return ResponseEntity.ok().body(repository.findAll());
 	}
 
 	@PostMapping
-	ResponseEntity<Person> CreatePerson(@Valid @RequestBody Person newPerson, HttpServletResponse response) {
+	ResponseEntity<Person> createPerson(@Valid @RequestBody Person newPerson, HttpServletResponse response) {
 		Person persistedPerson = repository.save(newPerson);
 
 		publisher.publishEvent(new ResourceCreationEvent(this, response, persistedPerson.getId()));
@@ -38,12 +38,12 @@ public class PersonResource {
 	}
 
 	@GetMapping("/{id}")
-	ResponseEntity<Person> GetPerson(@PathVariable Long id){
+	ResponseEntity<Person> getPerson(@PathVariable Long id) {
 		Person foundPerson;
 
-		try{
+		try {
 			foundPerson = repository.findById(id).get();
-		} catch (Exception e){
+		} catch (Exception e) {
 			return ResponseEntity.badRequest().body(null);
 		}
 

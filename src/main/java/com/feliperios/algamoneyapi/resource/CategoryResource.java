@@ -24,13 +24,13 @@ public class CategoryResource {
     private ApplicationEventPublisher publisher;
 
     @GetMapping
-    public ResponseEntity<List<Category>> ListCategories() {
+    public ResponseEntity<List<Category>> listCategories() {
         return ResponseEntity.ok().body(repository.findAll());
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Category> CreateCategory(@Valid @RequestBody Category newCategory, HttpServletResponse response) {
+    public ResponseEntity<Category> createCategory(@Valid @RequestBody Category newCategory, HttpServletResponse response) {
         Category persistedCategory = repository.save(newCategory);
 
         publisher.publishEvent(new ResourceCreationEvent(this, response, persistedCategory.getId()));
@@ -39,12 +39,12 @@ public class CategoryResource {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Category> GetCategory(@PathVariable Long id) {
+    public ResponseEntity<Category> getCategory(@PathVariable Long id) {
         Category foundCategory;
 
-        try{
+        try {
             foundCategory = repository.findById(id).get();
-        } catch(Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(null);
         }
 

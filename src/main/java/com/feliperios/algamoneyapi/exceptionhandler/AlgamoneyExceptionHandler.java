@@ -45,14 +45,14 @@ public class AlgamoneyExceptionHandler extends ResponseEntityExceptionHandler {
 																  HttpStatus status,
 																  WebRequest request){
 
-		List<ErrorMessage> errorMessageList = ExtractErrorMessageList(exception.getBindingResult());
+		List<ErrorMessage> errorMessageList = extractErrorMessageList(exception.getBindingResult());
 		return handleExceptionInternal(exception, errorMessageList, headers, HttpStatus.BAD_REQUEST, request);
 	}
 
-	private List<ErrorMessage> ExtractErrorMessageList(BindingResult bindingResult){
+	private List<ErrorMessage> extractErrorMessageList(BindingResult bindingResult) {
 		List<ErrorMessage> errorList = new ArrayList<ErrorMessage>();
 
-		for (FieldError fieldError : bindingResult.getFieldErrors()){
+		for (FieldError fieldError : bindingResult.getFieldErrors()) {
 			String prettyErrorMessage = messageSource.getMessage(fieldError, LocaleContextHolder.getLocale());
 			String detailedErrorMessage = fieldError.toString();
 			errorList.add(new ErrorMessage(prettyErrorMessage, detailedErrorMessage));

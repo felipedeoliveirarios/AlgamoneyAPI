@@ -1,0 +1,50 @@
+package com.feliperios.algamoneyapi.resource;
+
+import com.feliperios.algamoneyapi.model.Category;
+import com.feliperios.algamoneyapi.repository.CategoryRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import java.net.URI;
+import java.util.List;
+
+@RestController
+@RequestMapping("/category")
+public class CategoryResource {
+
+    @Autowired
+    private CategoryRepository repository;
+
+    @GetMapping
+    public ResponseEntity<List<Category>> ListCategories(){
+        return ResponseEntity.ok().body(repository.findAll());
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<Category> CreateCategory(@Valid @RequestBody Category newCategory, HttpServletResponse response){
+        Category persistedCategory = repository.save(newCategory);
+
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}").buildAndExpand(persistedCategory.getId()).toUri();
+        response.setHeader("Location", uri.toASCIIString());
+
+        return ResponseEntity.created(uri).body(persistedCategory);
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<Category> GetCategory(@PathVariable Long id){
+        Category foundCategory;
+
+        try{
+            foundCategory = repository.findById(id).get();
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        return ResponseEntity.ok().body(foundCategory);
+    }
+}

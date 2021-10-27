@@ -49,4 +49,10 @@ public class PersonResource {
 
 		return ResponseEntity.ok().body(foundPerson);
 	}
+
+	@DeleteMapping("/{id}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void deletePerson(@PathVariable Long id) {
+		repository.deleteById(id);
+	}
 }

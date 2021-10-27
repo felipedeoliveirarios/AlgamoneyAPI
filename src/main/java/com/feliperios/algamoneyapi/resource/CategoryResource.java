@@ -50,4 +50,10 @@ public class CategoryResource {
 
         return ResponseEntity.ok().body(foundCategory);
     }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteCategory(@PathVariable Long id) {
+        repository.deleteById(id);
+    }
 }

@@ -3,6 +3,7 @@ package com.feliperios.algamoneyapi.resource;
 import com.feliperios.algamoneyapi.event.ResourceCreationEvent;
 import com.feliperios.algamoneyapi.model.Category;
 import com.feliperios.algamoneyapi.repository.CategoryRepository;
+import com.feliperios.algamoneyapi.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
@@ -14,11 +15,14 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/category")
+@RequestMapping("/categories")
 public class CategoryResource {
 
     @Autowired
     private CategoryRepository repository;
+
+    @Autowired
+    private CategoryService service;
 
     @Autowired
     private ApplicationEventPublisher publisher;
@@ -55,5 +59,12 @@ public class CategoryResource {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCategory(@PathVariable Long id) {
         repository.deleteById(id);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Category> updateCategory(@PathVariable Long id, @RequestBody Category updateData) {
+        System.out.println(updateData.getName());
+        Category persistedCategory = service.updateCategory(id, updateData);
+        return ResponseEntity.ok().body(persistedCategory);
     }
 }

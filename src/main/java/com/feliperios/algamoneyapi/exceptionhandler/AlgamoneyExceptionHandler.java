@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -36,7 +37,7 @@ public class AlgamoneyExceptionHandler extends ResponseEntityExceptionHandler {
 																  WebRequest request){
 
 		String pretty = messageSource.getMessage("error.invalidRequest", null, LocaleContextHolder.getLocale());
-		String detailed = exception.toString();
+		String detailed = extractExceptionCause(exception);
 		List<ErrorMessage> errorMessageList = Arrays.asList(new ErrorMessage(pretty, detailed));
 		return handleExceptionInternal(exception, errorMessageList, headers, HttpStatus.BAD_REQUEST, request);
 	}
@@ -46,10 +47,30 @@ public class AlgamoneyExceptionHandler extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException exception,
 																  HttpHeaders headers,
 																  HttpStatus status,
-																  WebRequest request){
+																  WebRequest request) {
 
 		List<ErrorMessage> errorMessageList = extractErrorMessageList(exception.getBindingResult());
 		return handleExceptionInternal(exception, errorMessageList, headers, HttpStatus.BAD_REQUEST, request);
+	}
+
+
+	// Handler para erros de recurso não encontrado
+	@ExceptionHandler({EmptyResultDataAccessException.class, EntityNotFoundException.class})
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	public ResponseEntity<Object> handleEmptyResultDataAccessException(RuntimeException exception, WebRequest request) {
+
+		String pretty = messageSource.getMessage("error.resourceNotFound", null, LocaleContextHolder.getLocale());
+		String detailed = extractExceptionCause(exception);
+		List<ErrorMessage> errorMessageList = Arrays.asList(new ErrorMessage(pretty, detailed));
+
+		return handleExceptionInternal(exception, errorMessageList, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+	}
+
+	private String extractExceptionCause(RuntimeException exception) {
+		if (exception.getCause() != null)
+			return exception.getCause().toString();
+		else
+			return exception.toString();
 	}
 
 	private List<ErrorMessage> extractErrorMessageList(BindingResult bindingResult) {
@@ -62,17 +83,6 @@ public class AlgamoneyExceptionHandler extends ResponseEntityExceptionHandler {
 		}
 
 		return errorList;
-	}
-
-	@ExceptionHandler({EmptyResultDataAccessException.class})
-	@ResponseStatus()
-	public ResponseEntity<Object> handleEmptyResultDataAccessException(RuntimeException exception, WebRequest request) {
-
-		String pretty = messageSource.getMessage("error.resourceNotFound", null, LocaleContextHolder.getLocale());
-		String detailed = exception.toString();
-		List<ErrorMessage> errorMessageList = Arrays.asList(new ErrorMessage(pretty, detailed));
-
-		return handleExceptionInternal(exception, errorMessageList, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
 	}
 
 	public static class ErrorMessage {

@@ -15,6 +15,12 @@ public class PersonService {
 	private PersonRepository repository;
 
 	public Person updatePerson(Long id, Person updateData) {
+		Person persistedPerson = findPersonById(id);
+		BeanUtils.copyProperties(updateData, persistedPerson, "id");
+		return repository.save(persistedPerson);
+	}
+
+	public Person findPersonById(Long id) {
 		Optional<Person> queryResult = repository.findById(id);
 
 		if (queryResult.isEmpty()) {
@@ -22,8 +28,6 @@ public class PersonService {
 			throw new EntityNotFoundException(exceptionMessage);
 		}
 
-		Person persistedPerson = queryResult.get();
-		BeanUtils.copyProperties(updateData, persistedPerson, "id");
-		return repository.save(persistedPerson);
+		return queryResult.get();
 	}
 }

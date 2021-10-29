@@ -20,13 +20,18 @@ INSERT
     VALUES('Sarai Mangueira Pastana', '69098-939', 'das Flores', '6036', 'Bloco 9', 'Industrial', 'São Luís', 'MA', true);
 
 INSERT
-    INTO person (name, address_postal_code, address_street, address_number, address_complement, address_neighborhood, address_city, address_state, is_active)
-    VALUES('Stefania Pires Delgado', '50493-180', 'Quatorze', '7008', 'Fazenda 4', 'Vila Nova', 'Rio Branco', 'AC', true);
+INTO person (name, address_postal_code, address_street, address_number, address_complement, address_neighborhood,
+             address_city, address_state, is_active)
+VALUES ('Stefania Pires Delgado', '50493-180', 'Quatorze', '7008', 'Fazenda 4', 'Vila Nova', 'Rio Branco', 'AC', true);
 
 INSERT
-    INTO person (name, address_postal_code, address_street, address_number, address_complement, address_neighborhood, address_city, address_state, is_active)
-    VALUES('Ionara Caminha Frois', '79698-013', 'Belo Horizonte', '4734', 'Galpão 8', 'Vila Nova', 'Montes Claros', 'MG', true);
+INTO person (name, address_postal_code, address_street, address_number, address_complement, address_neighborhood,
+             address_city, address_state, is_active)
+VALUES ('Ionara Caminha Frois', '79698-013', 'Belo Horizonte', '4734', 'Galpão 8', 'Vila Nova', 'Montes Claros', 'MG',
+        true);
 
 INSERT
-    INTO person (name, address_postal_code, address_street, address_number, address_complement, address_neighborhood, address_city, address_state, is_active)
-    VALUES('Lopo Vilanova Brum', '28820-708', 'Santa Rita', '1465', 'Fazenda 3', 'Centro', 'Águas Lindas de Goiás', 'GO', true);
+INTO person (name, address_postal_code, address_street, address_number, address_complement, address_neighborhood,
+             address_city, address_state, is_active)
+VALUES ('Lopo Vilanova Brum', '28820-708', 'Santa Rita', '1465', 'Fazenda 3', 'Centro', 'Águas Lindas de Goiás', 'GO',
+        false);

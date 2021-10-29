@@ -1,8 +1,11 @@
 package com.feliperios.algamoneyapi.exceptionhandler;
 
+import com.feliperios.algamoneyapi.exception.NullOrInactivePersonException;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -37,7 +40,7 @@ public class AlgamoneyExceptionHandler extends ResponseEntityExceptionHandler {
 																  WebRequest request){
 
 		String pretty = messageSource.getMessage("error.invalidRequest", null, LocaleContextHolder.getLocale());
-		String detailed = extractExceptionCause(exception);
+		String detailed = ExceptionUtils.getRootCauseMessage(exception);
 		List<ErrorMessage> errorMessageList = Arrays.asList(new ErrorMessage(pretty, detailed));
 		return handleExceptionInternal(exception, errorMessageList, headers, HttpStatus.BAD_REQUEST, request);
 	}
@@ -60,17 +63,30 @@ public class AlgamoneyExceptionHandler extends ResponseEntityExceptionHandler {
 	public ResponseEntity<Object> handleEmptyResultDataAccessException(RuntimeException exception, WebRequest request) {
 
 		String pretty = messageSource.getMessage("error.resourceNotFound", null, LocaleContextHolder.getLocale());
-		String detailed = extractExceptionCause(exception);
+		String detailed = ExceptionUtils.getRootCauseMessage(exception);
 		List<ErrorMessage> errorMessageList = Arrays.asList(new ErrorMessage(pretty, detailed));
 
 		return handleExceptionInternal(exception, errorMessageList, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
 	}
 
-	private String extractExceptionCause(RuntimeException exception) {
-		if (exception.getCause() != null)
-			return exception.getCause().toString();
-		else
-			return exception.toString();
+	@ExceptionHandler({DataIntegrityViolationException.class})
+	public ResponseEntity<Object> handleDataIntegrityViolationException(RuntimeException exception, WebRequest request) {
+
+		String pretty = messageSource.getMessage("error.validationFailed", null, LocaleContextHolder.getLocale());
+		String detailed = ExceptionUtils.getRootCauseMessage(exception);
+		List<ErrorMessage> errorMessageList = Arrays.asList(new ErrorMessage(pretty, detailed));
+
+		return handleExceptionInternal(exception, errorMessageList, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+	}
+
+	@ExceptionHandler({NullOrInactivePersonException.class})
+	public ResponseEntity<Object> handleNullOrInactivePersonException(RuntimeException exception, WebRequest request) {
+
+		String pretty = messageSource.getMessage("error.nullOrInactivePerson", null, LocaleContextHolder.getLocale());
+		String detailed = ExceptionUtils.getRootCauseMessage(exception);
+		List<ErrorMessage> errorMessageList = Arrays.asList(new ErrorMessage(pretty, detailed));
+
+		return handleExceptionInternal(exception, errorMessageList, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
 	}
 
 	private List<ErrorMessage> extractErrorMessageList(BindingResult bindingResult) {

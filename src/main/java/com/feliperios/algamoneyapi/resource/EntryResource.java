@@ -3,9 +3,12 @@ package com.feliperios.algamoneyapi.resource;
 import com.feliperios.algamoneyapi.event.ResourceCreationEvent;
 import com.feliperios.algamoneyapi.model.Entry;
 import com.feliperios.algamoneyapi.repository.EntryRepository;
+import com.feliperios.algamoneyapi.repository.filter.EntryFilter;
 import com.feliperios.algamoneyapi.service.EntryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -29,8 +31,8 @@ public class EntryResource {
 	ApplicationEventPublisher publisher;
 
 	@GetMapping
-	public ResponseEntity<List<Entry>> listEntries() {
-		return ResponseEntity.ok().body(repository.findAll());
+	public ResponseEntity<Page<Entry>> searchEntries(EntryFilter entryFilter, Pageable pageable) {
+		return ResponseEntity.ok().body(repository.filter(entryFilter, pageable));
 	}
 
 	@GetMapping("/{id}")

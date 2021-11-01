@@ -1,0 +1,74 @@
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+<style type="text/css">
+    .page-wrapper {
+        max-width: 70%;
+        align-content: center;
+        justify-content: center;
+    }
+
+    .response-box {
+        min-height: 4em;
+        margin-top: 2em;
+        text-align: left;
+        transition: all 5s;
+    }
+
+    .page-title {
+        padding: 1em 0;
+    }
+
+    #response-box {
+        overflow-wrap: break-word;
+    }
+</style>
+
+<script>
+    function showResponse() {
+        var obj = JSON.parse(this.responseText);
+        document.getElementById("response-box").innerHTML = JSON.stringify(obj, undefined, 2);
+    }
+
+    function listCategories() {
+        var request = new XMLHttpRequest();
+        request.addEventListener("load", showResponse);
+        request.open("GET", "http://localhost:8080/categories");
+        request.send();
+    }
+
+    function getAuthToken() {
+        var CLIENT = "angular";
+        var SECRET = "4ngul4r";
+        var request = new XMLHttpRequest();
+        request.addEventListener("load", showResponse);
+        request.open("POST", "http://localhost:8080/oauth/token");
+        request.setRequestHeader("Authorization", "Basic " + btoa(CLIENT + ":" + SECRET));
+        request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        request.send("client_id=angular&username=admin&password=admin&grant_type=password");
+    }
+
+    function listEntries() {
+
+    }
+</script>
+<center>
+    <div class="page-wrapper">
+        <h1 class="title page-title">CORS Test</h1>
+        <div class="row gx-5">
+            <div class="col-6">
+                <button class="btn btn-lg btn-block btn-success" onclick="listCategories()">List Categories</button>
+            </div>
+            <div class="col-6">
+                <button class="btn btn-lg btn-block btn-info" onclick="getAuthToken()">Get Auth Token</button>
+            </div>
+            <div class="col-6">
+                <button class="btn btn-lg btn-block btn-warning" onclick="listEntries()">Get Auth Token</button>
+            </div>
+        </div>
+        <div class="card response-box">
+            <div class="card-body">
+                <pre id="response-box"></pre>
+            </div>
+        </div>
+    </div>
+</center>

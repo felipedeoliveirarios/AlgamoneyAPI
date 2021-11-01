@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -28,12 +29,14 @@ public class CategoryResource {
     private ApplicationEventPublisher publisher;
 
     @GetMapping
+    @PreAuthorize("hasAuthority('ROLE_CATEGORY_RETRIEVE')")
     public ResponseEntity<List<Category>> listCategories() {
         return ResponseEntity.ok().body(repository.findAll());
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAuthority('ROLE_CATEGORY_CREATE')")
     public ResponseEntity<Category> createCategory(@Valid @RequestBody Category newCategory, HttpServletResponse response) {
         Category persistedCategory = repository.save(newCategory);
 
@@ -43,6 +46,7 @@ public class CategoryResource {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_CATEGORY_RETRIEVE')")
     public ResponseEntity<Category> getCategory(@PathVariable Long id) {
         Category foundCategory;
 
@@ -57,11 +61,13 @@ public class CategoryResource {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAuthority('ROLE_CATEGORY_DELETE')")
     public void deleteCategory(@PathVariable Long id) {
         repository.deleteById(id);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_CATEGORY_UPDATE')")
     public ResponseEntity<Category> updateCategory(@PathVariable Long id, @RequestBody Category updateData) {
         System.out.println(updateData.getName());
         Category persistedCategory = service.updateCategory(id, updateData);

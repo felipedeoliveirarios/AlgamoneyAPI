@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -29,11 +30,13 @@ public class PersonResource {
 	ApplicationEventPublisher publisher;
 
 	@GetMapping
+	@PreAuthorize("hasAuthority('ROLE_PERSON_RETRIEVE')")
 	ResponseEntity<List<Person>> listPeople() {
 		return ResponseEntity.ok().body(repository.findAll());
 	}
 
 	@PostMapping
+	@PreAuthorize("hasAuthority('ROLE_PERSON_CREATE')")
 	ResponseEntity<Person> createPerson(@Valid @RequestBody Person newPerson, HttpServletResponse response) {
 		Person persistedPerson = repository.save(newPerson);
 
@@ -43,6 +46,7 @@ public class PersonResource {
 	}
 
 	@GetMapping("/{id}")
+	@PreAuthorize("hasAuthority('ROLE_PERSON_RETRIEVE')")
 	ResponseEntity<Person> getPerson(@PathVariable Long id) {
 		Person foundPerson;
 
@@ -57,11 +61,13 @@ public class PersonResource {
 
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@PreAuthorize("hasAuthority('ROLE_PERSON_DELETE')")
 	public void deletePerson(@PathVariable Long id) {
 		repository.deleteById(id);
 	}
 
 	@PutMapping("/{id}")
+	@PreAuthorize("hasAuthority('ROLE_PERSON_UPDATE')")
 	public ResponseEntity<Person> updatePerson(@PathVariable Long id, @RequestBody Person updateData) {
 		Person persistedPerson = service.updatePerson(id, updateData);
 		return ResponseEntity.ok().body(persistedPerson);
@@ -69,6 +75,7 @@ public class PersonResource {
 
 	@PutMapping("/{id}/active")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@PreAuthorize("hasAuthority('ROLE_PERSON_UPDATE')")
 	public void updatePersonActive(@PathVariable Long id, @RequestBody boolean newActiveValue) {
 		Person persistedPerson = repository.getById(id);
 		persistedPerson.setActive(newActiveValue);
@@ -77,6 +84,7 @@ public class PersonResource {
 
 	@PutMapping("/{id}/name")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@PreAuthorize("hasAuthority('ROLE_PERSON_UPDATE')")
 	public void updatePersonName(@PathVariable Long id, @RequestBody String newName) {
 		Person persistedPerson = repository.getById(id);
 		persistedPerson.setName(newName);
@@ -85,6 +93,7 @@ public class PersonResource {
 
 	@PutMapping("/{id}/address")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@PreAuthorize("hasAuthority('ROLE_PERSON_UPDATE')")
 	public void updatePersonName(@PathVariable Long id, @RequestBody(required = false) Address newAddress) {
 		Person persistedPerson = repository.getById(id);
 		persistedPerson.setAddress(newAddress);

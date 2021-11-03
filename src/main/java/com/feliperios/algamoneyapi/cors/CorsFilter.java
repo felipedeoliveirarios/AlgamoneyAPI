@@ -18,7 +18,7 @@ public class CorsFilter implements Filter {
 	@Autowired
 	AlgamoneyApiProperty apiProperty;
 
-	private String allowedOrigin = apiProperty.getSecurityOptions().getAllowedOrigin();
+	private String allowedOrigin = "http://localhost:8000";
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
@@ -33,7 +33,7 @@ public class CorsFilter implements Filter {
 		response.setHeader("Access-Control-Allow-Origin", allowedOrigin);
 		response.setHeader("Access-Control-Allow-Credentials", "true");
 
-		if (request.getMethod().equals("OPTIONS") && request.getHeader("Origin").equals(allowedOrigin)) {
+		if ("OPTIONS".equals(request.getMethod()) && allowedOrigin.equals(request.getHeader("Origin"))) {
 			response.setHeader("Access-Control-Allow-Methods", "POST, GET, DELETE, PUT, OPTIONS");
 			response.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type, Accept");
 			response.setHeader("Access-Control-Max-Age", "3600");

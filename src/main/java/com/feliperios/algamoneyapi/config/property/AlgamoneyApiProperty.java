@@ -13,7 +13,7 @@ public class AlgamoneyApiProperty {
 
 	public static class Security {
 		private boolean enableHTTPS;
-		String allowedOrigin;
+		private String allowedOrigin = "http://localhost:8000";
 
 		public String getAllowedOrigin() {
 			return allowedOrigin;

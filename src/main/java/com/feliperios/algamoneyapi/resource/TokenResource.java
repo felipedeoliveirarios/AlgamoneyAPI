@@ -1,5 +1,7 @@
 package com.feliperios.algamoneyapi.resource;
 
+import com.feliperios.algamoneyapi.config.property.AlgamoneyApiProperty;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,10 +14,14 @@ import javax.servlet.http.HttpServletResponse;
 @RestController
 @RequestMapping("/tokens")
 public class TokenResource {
+
+	@Autowired
+	private AlgamoneyApiProperty apiProperty;
+
 	@DeleteMapping("/revoke")
 	public void removeTokenFromCookies(HttpServletRequest request, HttpServletResponse response) {
 		Cookie cookie = new Cookie("refreshToken", null);
-		cookie.setHttpOnly(true);
+		cookie.setHttpOnly(apiProperty.getSecurityOptions().isEnableHTTPS());
 		cookie.setSecure(false);
 		cookie.setPath(request.getContextPath() + "/oauth/token");
 		cookie.setMaxAge(0);

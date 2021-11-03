@@ -1,5 +1,7 @@
 package com.feliperios.algamoneyapi.cors;
 
+import com.feliperios.algamoneyapi.config.property.AlgamoneyApiProperty;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -13,7 +15,10 @@ import java.io.IOException;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class CorsFilter implements Filter {
 
-	private String allowedOrigin = "http://localhost:8000";
+	@Autowired
+	AlgamoneyApiProperty apiProperty;
+
+	private String allowedOrigin = apiProperty.getSecurityOptions().getAllowedOrigin();
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {

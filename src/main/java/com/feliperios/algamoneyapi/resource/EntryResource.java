@@ -4,6 +4,7 @@ import com.feliperios.algamoneyapi.event.ResourceCreationEvent;
 import com.feliperios.algamoneyapi.model.Entry;
 import com.feliperios.algamoneyapi.repository.EntryRepository;
 import com.feliperios.algamoneyapi.repository.filter.EntryFilter;
+import com.feliperios.algamoneyapi.repository.projection.EntryDigest;
 import com.feliperios.algamoneyapi.service.EntryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -35,6 +36,12 @@ public class EntryResource {
 	@PreAuthorize("hasAuthority('ROLE_ENTRY_RETRIEVE')")
 	public ResponseEntity<Page<Entry>> searchEntries(EntryFilter entryFilter, Pageable pageable) {
 		return ResponseEntity.ok().body(repository.filter(entryFilter, pageable));
+	}
+
+	@GetMapping(params = "digest")
+	@PreAuthorize("hasAuthority('ROLE_ENTRY_RETRIEVE')")
+	public ResponseEntity<Page<EntryDigest>> searchEntriesDigest(EntryFilter entryFilter, Pageable pageable) {
+		return ResponseEntity.ok().body(repository.generateDigest(entryFilter, pageable));
 	}
 
 	@GetMapping("/{id}")

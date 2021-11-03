@@ -26,7 +26,7 @@ public class AppUserDetailService implements UserDetailsService {
 		Optional<User> optionalUser = userRepository.findByEmail(email);
 		User user = optionalUser.orElseThrow(() -> new UsernameNotFoundException("Nome de usuário e/ou senha inválidos."));
 
-		return new org.springframework.security.core.userdetails.User(email, user.getPassword(), getPermissions(user));
+		return new SystemUser(user, getPermissions(user));
 	}
 
 	private Collection<? extends GrantedAuthority> getPermissions(User user) {

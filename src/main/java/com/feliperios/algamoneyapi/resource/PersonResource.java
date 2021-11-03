@@ -4,9 +4,12 @@ import com.feliperios.algamoneyapi.event.ResourceCreationEvent;
 import com.feliperios.algamoneyapi.model.Address;
 import com.feliperios.algamoneyapi.model.Person;
 import com.feliperios.algamoneyapi.repository.PersonRepository;
+import com.feliperios.algamoneyapi.repository.filter.PersonFilter;
 import com.feliperios.algamoneyapi.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/people")
@@ -31,8 +33,8 @@ public class PersonResource {
 
 	@GetMapping
 	@PreAuthorize("hasAuthority('ROLE_PERSON_RETRIEVE')")
-	ResponseEntity<List<Person>> listPeople() {
-		return ResponseEntity.ok().body(repository.findAll());
+	ResponseEntity<Page<Person>> searchPeople(PersonFilter personFilter, Pageable pageable) {
+		return ResponseEntity.ok().body(repository.filter(personFilter, pageable));
 	}
 
 	@PostMapping

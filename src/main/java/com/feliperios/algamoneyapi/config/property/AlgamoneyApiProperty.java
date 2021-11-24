@@ -12,8 +12,8 @@ public class AlgamoneyApiProperty {
 	}
 
 	public static class Security {
-		private boolean enableHTTPS;
-		private String allowedOrigin = "http://localhost:8000";
+		private boolean enableHttps;
+		private String allowedOrigin;
 
 		public String getAllowedOrigin() {
 			return allowedOrigin;
@@ -23,12 +23,12 @@ public class AlgamoneyApiProperty {
 			this.allowedOrigin = allowedOrigin;
 		}
 
-		public boolean isEnableHTTPS() {
-			return enableHTTPS;
+		public boolean isEnableHttps() {
+			return enableHttps;
 		}
 
-		public void setEnableHTTPS(boolean enableHTTPS) {
-			this.enableHTTPS = enableHTTPS;
+		public void setEnableHttps(boolean enableHttps) {
+			this.enableHttps = enableHttps;
 		}
 	}
 }

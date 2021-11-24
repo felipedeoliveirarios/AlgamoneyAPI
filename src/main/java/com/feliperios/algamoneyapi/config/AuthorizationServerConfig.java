@@ -30,8 +30,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 				.secret("{noop}4ngul4r")
 				.scopes("read", "write")
 				.authorizedGrantTypes("password", "refresh_token")
-				.accessTokenValiditySeconds(300)
-				.refreshTokenValiditySeconds(3600 * 12);
+				.accessTokenValiditySeconds(300) // TODO: get value from config
+				.refreshTokenValiditySeconds(3600 * 12); // TODO: get value from config
 	}
 
 	@Override
